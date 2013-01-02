@@ -27,8 +27,8 @@ In R, type `global.env` to see a list of built in functions.
 Special forms are:
 * `(quote expr)` 
 * `(if test conseq alt)`
-* `(set! var exp)`
-* `(define var exp)`
+* `(set! var expr)`
+* `(define var expr)`
 * `(lambda (vars) expr)`
 * `(begin exprs)`
 
@@ -42,5 +42,5 @@ Special forms are:
 * More built-ins to be added
 
 
-[1]: http://norvig.com/lispy.html
+[1]: http://norvig.com/lispy.html (How to Write a (Lisp) Interpreter (in Python))
 
