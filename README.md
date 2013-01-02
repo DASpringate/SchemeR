@@ -3,7 +3,7 @@ SchemeR: An implementation of a simple Scheme in R
 
 ####Copyright (c) David Springate 2013
 
-This project is inspired by/ported from/ripped off of Peter Norvig's [Lispy](http://norvig.com/lis.py)([1]).
+This project is inspired by/ported from/ripped off of Peter Norvig's [Lispy](http://norvig.com/lis.py) and [(How to Write a (Lisp) Interpreter (in Python))](http://norvig.com/lispy.html).
 
 To run the REPL, start up R and:
 
@@ -32,8 +32,11 @@ Special forms are:
 * `(lambda (vars) expr)`
 * `(begin exprs)`
 
+#####Added features:
+* The `Eval` function is wrapped in a `tryCatch` which means that every typo will not crash you out
+  of the REPL.
 
-#####Issues
+#####Issues:
 
 * The Lambda special form does not yet work correctly (at all!). Returns error:
     Error in nchar(val) : 
@@ -41,6 +44,8 @@ Special forms are:
 * Quote is not completely sane
 * More built-ins to be added
 
+#####To do:
+* Implement features from Peter Norvig's [more complex interpreter](http://norvig.com/lispy2.html)
 
-[1]: http://norvig.com/lispy.html "(How to Write a (Lisp) Interpreter (in Python))"
+
 
