@@ -11,6 +11,7 @@ To run the REPL, start up R and:
 source(scheme.R)
 schemeR()
 ```
+Hit Control-C to get back to R.
 
 To test outside of the REPL, try something like:
 
@@ -20,9 +21,8 @@ procedure <- "(if (< (+ 123 (* 12 12)) 345) (quote yes) (quote no))"
 parsed.procedure <- read(procedure)
 parsed.procedure        # the procedure parsed into R lists
 Eval(parsed.procedure)  # The result of the evaluation of the parsed procedure
+global.env              # List of all built-in functions
 ```
-Hit Control-C to get back to R.
-In R, type `global.env` to see a list of built in functions.
 
 Special forms are:
 * `(quote expr)` 
@@ -38,9 +38,10 @@ Special forms are:
 
 #####Issues/bugs:
 
-* The Lambda special form does not yet work correctly (at all!). Returns error:
-    Error in nchar(val) : 
-        cannot coerce type 'closure' to vector of type 'character'
+* The Lambda special form does not yet work correctly (at all!). 
+    - Returns th following error:
+    `Error in nchar(val) : 
+        cannot coerce type 'closure' to vector of type 'character'`
 * Quote is not completely sane
 
 #####To do:
