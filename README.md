@@ -3,7 +3,7 @@ SchemeR: An implementation of a simple Scheme in R
 
 ####Copyright (c) David Springate 2013
 
-This project is inspired by/ported from/ripped off of Peter Norvig's [Lispy](http://norvig.com/lis.py)[1].
+This project is inspired by/ported from/ripped off of Peter Norvig's [Lispy](http://norvig.com/lis.py)([1]).
 
 To run the REPL, start up R and:
 
@@ -25,7 +25,7 @@ Hit Control-C to get back to R.
 In R, type `global.env` to see a list of built in functions.
 
 Special forms are:
-* `(quote expr)`: 
+* `(quote expr)` 
 * `(if test conseq alt)`
 * `(set! var exp)`
 * `(define var exp)`
