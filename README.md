@@ -36,16 +36,20 @@ Special forms are:
 * The `Eval` function is wrapped in a `tryCatch` which means that every typo will not crash you out
   of the REPL.
 
-#####Issues:
+#####Issues/bugs:
 
 * The Lambda special form does not yet work correctly (at all!). Returns error:
     Error in nchar(val) : 
         cannot coerce type 'closure' to vector of type 'character'
 * Quote is not completely sane
-* More built-ins to be added
 
 #####To do:
+* More built-ins to be added
 * Implement features from Peter Norvig's [more complex interpreter](http://norvig.com/lispy2.html)
+    - different data types
+    - Macros
+    - Reader macros
+
 
 
 
