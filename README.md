@@ -42,5 +42,5 @@ Special forms are:
 * More built-ins to be added
 
 
-[1]: http://norvig.com/lispy.html (How to Write a (Lisp) Interpreter (in Python))
+[1]: http://norvig.com/lispy.html "(How to Write a (Lisp) Interpreter (in Python))"
 
