@@ -29,7 +29,7 @@ Special forms are:
 * `(if test conseq alt)`
 * `(set! var expr)`
 * `(define var expr)`
-* `(lambda (vars) expr)`
+* `(lambda (vars) expr)` - Needs fixing!
 * `(begin exprs)`
 
 #####Added features:
@@ -39,7 +39,7 @@ Special forms are:
 #####Issues/bugs:
 
 * The Lambda special form does not yet work correctly (at all!). 
-    - Returns th following error:
+    - Returns the following error:
     `Error in nchar(val) : 
         cannot coerce type 'closure' to vector of type 'character'`
 * Quote is not completely sane
