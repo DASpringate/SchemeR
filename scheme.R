@@ -1,6 +1,8 @@
 ## SchemeR - an implementation of scheme in R
+## Copyright (c) David Springate 2013
 ## Ported from Peter Norvig's Lispy. (http://norvig.com/lis.py)
 
+schemeR.version <- 0.1
 
 Env <- function(outer = list()){
     list("outer" = outer)
@@ -153,6 +155,7 @@ to.string <- function(expr){
 
 schemeR <- function(prompt = "schemeR>> "){
     # Read-eval-print-loop
+    cat("SchemeR version", schemeR.version,"\n")
     while(1){
         cat(prompt)
         val <- Eval(read(readLines(n = 1)), global.env)
