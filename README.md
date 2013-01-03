@@ -4,8 +4,7 @@ SchemeR: An implementation of a simple Scheme in R
 ####Copyright (c) David Springate 2013 
 #####[Creative Commons Attribution 3.0 Unported License (CC BY 3.0)](http://creativecommons.org/licenses/by/3.0/)
 
-This project is inspired by/ported from/ripped off of Peter Norvig's [Lispy](http://norvig.com/lis.py) and [(How to Write a (Lisp) Interpreter (in Python))](http://norvig.com/lispy.html) with further help from [SICP](http://mitpress.mit.edu/sicp/full-text/book/book.html).
-
+This project is inspired by/ported from/ripped off of Peter Norvig's [Lispy](http://norvig.com/lis.py) and [(How to Write a (Lisp) Interpreter (in Python))](http://norvig.com/lispy.html) with further help from [SICP](http://mitpress.mit.edu/sicp/full-text/book/book.html). It comes in at 149 non-comment, non-blank lines and just under 6K of source code.
 To run the REPL, start up R and:
 
 ```R

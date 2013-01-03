@@ -28,6 +28,7 @@ globals <- list("+" = function(x,y) x+y, "-" = function(x,y) x-y, "*" = function
                 "asin" = asin, "sinh" = sinh, "pi" = pi, "sqrt" = sqrt)
     
 add.globals <- function(env, global.fns = globals){
+    # Populate an environment with built-in functions
     for(i in 1:length(global.fns)){
         env[[names(global.fns)[i]]] <- global.fns[[i]]
     }
@@ -36,17 +37,17 @@ add.globals <- function(env, global.fns = globals){
 
 global.env <- add.globals(Env())
 
-##Eval function
+##Eval function 
 
 Eval <- function(x, env = global.env){
    #Evaluate an expression in an environment
     tryCatch({
-        if(is.character(x)){                        # variable reference
+        if(is.character(x)){                                # variable reference
             locate(env, x)[[x]]
-        } else if(!is.list(x)){                     # constant literal
+        } else if(!is.list(x)){                             # constant literal
             return(x)
         } else if(!is.list(x[[1]])){
-            if(x[[1]] == "quote"){               # (quote exp)
+            if(x[[1]] == "quote"){                          # (quote exp)
                 return(x[[2]])
             } else if(x[[1]] == "if"){
                 names(x) <- c("","test","conseq","altern")
@@ -59,7 +60,7 @@ Eval <- function(x, env = global.env){
                     assign(deparse(substitute(env)), new.env, envir = .GlobalEnv)
                     return(new.env[[x$var]])
                 }
-            } else if(x[[1]] == "define"){
+            } else if(x[[1]] == "define"){                  # (define var exp)
                 names(x) <- c("", "var", "expr")
                 new.env <- env
                 new.env[[x$var]] = Eval(x$expr, env)
@@ -70,27 +71,22 @@ Eval <- function(x, env = global.env){
                 return(function(..., vars = x$vars, expr = x$expr){
                         args <- list(...)
                         local.env <- Env(global.env)
-                        #cat("bindings:\n")
                         for(v in 1:length(vars)){
-                            #cat(vars[[v]], ":", args[[v]], "\n")
                             local.env[[vars[[v]]]] <- args[[v]]
                         }
-                       # cat("lambda args:", unlist(args),"\n")
-                       # cat("lambda vars:", unlist(vars), "\n")
-                       # cat("lambda expression:", unlist(expr), "\n")
                         Eval(expr, local.env)
                     })
-            } else if(x[[1]] == "begin"){
+            } else if(x[[1]] == "begin"){                   # (begin exprs)
                 for(expr in x[2:length(x)]){
                     val <- Eval(expr, env)
                 }
                 return(val)
-            } else {
+            } else {                                        # procedure evaluation
                 exprs <- lapply(x, function(expr) Eval(expr, env))
                 proc <- exprs[[1]]
                 return(do.call(proc, exprs[2:length(exprs)]))
             }
-        } else {
+        } else {                                # ugly hack to deal with R's vectorised if stratements
             exprs <- lapply(x, function(expr) Eval(expr, env))
             proc <- exprs[[1]]
             return(do.call(proc, exprs[2:length(exprs)]))
@@ -165,4 +161,3 @@ schemeR <- function(prompt = "schemeR>> "){
         cat(to.string(val), "\n")
     }
 }
-
