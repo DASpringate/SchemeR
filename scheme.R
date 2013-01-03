@@ -1,8 +1,7 @@
 ## SchemeR - an implementation of scheme in R
 ## Copyright (c) David Springate 2013
-## Ported from Peter Norvig's Lispy. (http://norvig.com/lis.py)
 
-schemeR.version <- 0.1
+schemeR.version <- 1.01
 
 Env <- function(outer = list()){
     list("outer" = outer)
@@ -40,42 +39,57 @@ global.env <- add.globals(Env())
 ##Eval function
 
 Eval <- function(x, env = global.env){
-   # if(!is.null(local.env)){
-   #     env <- local.env
-   # }
-    #Evaluate an expression in an environment
+   #Evaluate an expression in an environment
     tryCatch({
         if(is.character(x)){                        # variable reference
             locate(env, x)[[x]]
         } else if(!is.list(x)){                     # constant literal
             return(x)
-        } else if(x[[1]] == "quote"){               # (quote exp)
-            return(x[[2]])
-        } else if(x[[1]] == "if"){
-            names(x) <- c("","test","conseq","altern")
-            return(ifelse(Eval(x$test, env), Eval(x$conseq, env), Eval(x$altern, env)))
-        } else if(x[[1]] == "set!"){                    # don't think this will work!
-            names(x) <- c("", "var", "expr")
-            if(is.list(locate(env, x$var))){
+        } else if(!is.list(x[[1]])){
+            if(x[[1]] == "quote"){               # (quote exp)
+                return(x[[2]])
+            } else if(x[[1]] == "if"){
+                names(x) <- c("","test","conseq","altern")
+                return(ifelse(Eval(x$test, env), Eval(x$conseq, env), Eval(x$altern, env)))
+            } else if(x[[1]] == "set!"){                    # don't think this will work!
+                names(x) <- c("", "var", "expr")
+                if(is.list(locate(env, x$var))){
+                    new.env <- env
+                    new.env[[x$var]] = Eval(x$expr, new.env)
+                    assign(deparse(substitute(env)), new.env, envir = .GlobalEnv)
+                    return(new.env[[x$var]])
+                }
+            } else if(x[[1]] == "define"){
+                names(x) <- c("", "var", "expr")
                 new.env <- env
-                new.env[[x$var]] = Eval(x$expr, new.env)
+                new.env[[x$var]] = Eval(x$expr, env)
                 assign(deparse(substitute(env)), new.env, envir = .GlobalEnv)
                 return(new.env[[x$var]])
+            } else if(x[[1]] == "lambda"){                  # (lambda (var*) expr)
+                names(x) <- c("", "vars", "expr")
+                return(function(..., vars = x$vars, expr = x$expr){
+                        args <- list(...)
+                        local.env <- Env(global.env)
+                        #cat("bindings:\n")
+                        for(v in 1:length(vars)){
+                            #cat(vars[[v]], ":", args[[v]], "\n")
+                            local.env[[vars[[v]]]] <- args[[v]]
+                        }
+                       # cat("lambda args:", unlist(args),"\n")
+                       # cat("lambda vars:", unlist(vars), "\n")
+                       # cat("lambda expression:", unlist(expr), "\n")
+                        Eval(expr, local.env)
+                    })
+            } else if(x[[1]] == "begin"){
+                for(expr in x[2:length(x)]){
+                    val <- Eval(expr, env)
+                }
+                return(val)
+            } else {
+                exprs <- lapply(x, function(expr) Eval(expr, env))
+                proc <- exprs[[1]]
+                return(do.call(proc, exprs[2:length(exprs)]))
             }
-        } else if(x[[1]] == "define"){
-            names(x) <- c("", "var", "expr")
-            new.env <- env
-            new.env[[x$var]] = Eval(x$expr, env)
-            assign(deparse(substitute(env)), new.env, envir = .GlobalEnv)
-            return(new.env[[x$var]])
-        } else if(x[[1]] == "lambda"){                  # (lambda (var*) expr)
-            names(x) <- c("", "vars", "expr")
-            return(lambda(x$vars, x$expr))
-        } else if(x[[1]] == "begin"){
-            for(expr in x[2:length(x)]){(
-                val <- Eval(expr, env)
-            }
-            return(val)
         } else {
             exprs <- lapply(x, function(expr) Eval(expr, env))
             proc <- exprs[[1]]
@@ -83,23 +97,7 @@ Eval <- function(x, env = global.env){
         }
     }, error = function(e) print(e$message))
 }
-
-
-lambda <- function(vars, expr){
-    local.env <- Env(global.env)
-    for(v in vars){
-        local.env[[v]] <- v
-    }
-    fn <- function() pass
-    formals(fn) <- eval(parse(text=paste("alist(",paste(vars, collapse = "=,"), "=)", sep="")))
-    body(fn) <- quote(Eval(expr, local.env))
-    return(fn)
-    #return(Eval(expr, local.env))
-}
-
-
-lambda(x$vars, x$expr)
-
+     
 ##parse, read and UI:
 
 tokenise <- function(s){
@@ -110,7 +108,8 @@ tokenise <- function(s){
 
 atom <- function(token){
     # numbers are numeric, everything else is character string
-    ifelse(suppressWarnings(!is.na(as.numeric(token))), as.numeric(token), as.character(token))
+    ifelse(suppressWarnings(!is.na(as.numeric(token))), 
+                as.numeric(token), as.character(token))
 }
 
 read <- function(s){
@@ -148,6 +147,10 @@ to.string <- function(expr){
     # Convert an R object back to a Lisp-readable string
     if(is.list(expr)){
         paste("(", paste(sapply(expr, to.string), collapse = " "), ")", sep = "")
+    } else if (is.function(expr)){
+       paste("Anonymous function: (", 
+             paste(sapply(environment(expr)$x, to.string), collapse = " "),
+             ")", sep = "") 
     } else {
         as.character(expr)
     }
@@ -159,17 +162,7 @@ schemeR <- function(prompt = "schemeR>> "){
     while(1){
         cat(prompt)
         val <- Eval(read(readLines(n = 1)), global.env)
-        if(nchar(val)){
-            cat(to.string(val), "\n")
-        }
+        cat(to.string(val), "\n")
     }
 }
 
-a = Env()
-a$
-# program <- "(begin (define r 3) (* 3.141592653 (* r r)))"
-# a = read(program)
-# Eval(a, global.env)
-# 
-# a = read("(lambda (x y) (+ x y))")
-# s.replace(   '(',  ' ( '   ).replace(')',' ) ').split()
