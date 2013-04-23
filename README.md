@@ -1,5 +1,5 @@
-SchemeR: An implementation of a simple Scheme in R
-==================================================
+SchemeR: A simple lisp interpreter written in R
+================================================
 
 ####Copyright (c) David Springate 2013 
 #####[Creative Commons Attribution 3.0 Unported License (CC BY 3.0)](http://creativecommons.org/licenses/by/3.0/)
