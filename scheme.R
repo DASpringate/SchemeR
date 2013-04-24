@@ -1,7 +1,7 @@
 ## SchemeR - an implementation of scheme in R
 ## Copyright (c) David Springate 2013
 
-schemeR.version <- 2.02
+schemeR.version <- 1.02
 
 Env <- function(outer = new.env()){
   # defines a new environment
